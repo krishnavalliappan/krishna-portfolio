@@ -51,6 +51,7 @@ function plist(values: Record<"project" | "config" | "pnpm" | "logs", string>) {
   <key>ProgramArguments</key><array><string>${escape(values.pnpm)}</string><string>--dir</string><string>${escape(values.project)}</string><string>codex:sync</string></array>
   <key>EnvironmentVariables</key><dict>
     <key>CODEX_SYNC_CONFIG</key><string>${escape(values.config)}</string>
+    <key>PATH</key><string>${escape(`${resolve(home, ".local/bin")}:${resolve(values.pnpm, "..")}:/usr/local/bin:/usr/bin:/bin`)}</string>
   </dict>
   <key>StartInterval</key><integer>3600</integer>
   <key>RunAtLoad</key><true/>
