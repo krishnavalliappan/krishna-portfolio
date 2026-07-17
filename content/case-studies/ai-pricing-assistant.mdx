@@ -1,0 +1,45 @@
+---
+title: "Building an AI-guided pricing assistant"
+summary: "How structured outputs, streaming, and server-side validation turned a manual pricing workflow into a guided product."
+publishedAt: "2026-07-15"
+draft: false
+tags:
+  - AI
+  - Full stack
+  - Product engineering
+role: "Full-Stack Developer"
+stack:
+  - FastAPI
+  - Vue 3
+  - SQLAlchemy
+  - Server-Sent Events
+outcome: "Supported more than 100 guided sessions while reducing reliance on manual customer contact."
+image: "/images/projects/ai-pricing-placeholder.svg"
+---
+
+The pricing process depended on customer contact and manual guidance. The goal was not to add a chatbot beside that workflow. It was to turn the workflow itself into a product that could collect context, guide decisions, and produce a useful result.
+
+## What I built
+
+I worked across the full request path: the Vue interface, FastAPI endpoints, SQLAlchemy persistence, streamed progress over Server-Sent Events, and structured LLM responses that the application could validate before rendering.
+
+The assistant supported more than 100 sessions. The useful outcome was not the session count by itself. Customers could move through more of the pricing journey without waiting for manual contact.
+
+## Constraints
+
+- Generated output had to fit an application contract rather than arrive as unstructured prose.
+- Long-running model work needed visible progress without holding the interface in an indeterminate state.
+- Persisted session state had to survive navigation and support an embeddable iframe experience.
+- The product handled business data, so server-side validation remained authoritative.
+
+## Architecture
+
+FastAPI owned orchestration and validation. SQLAlchemy stored the durable state. Vue rendered a guided sequence rather than a free-form chat transcript. SSE carried incremental status and results to the browser without introducing a separate WebSocket service.
+
+## What I learned
+
+Structured output is only one boundary. Production reliability also depends on retries, schema evolution, partial responses, and deciding what the server will reject. Streaming improves perceived performance, but it also creates lifecycle states that need explicit handling.
+
+## Confidentiality note
+
+This write-up uses only information already present in my public resume. Client names, pricing rules, internal prompts, and proprietary data are intentionally omitted.

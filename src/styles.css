@@ -1,0 +1,305 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource/ibm-plex-mono";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "IBM Plex Sans Variable", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: 0;
+  --radius-md: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+}
+
+:root {
+  --background: oklch(0.965 0.008 95);
+  --foreground: oklch(0.18 0.02 145);
+  --card: oklch(0.985 0.006 95);
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.45 0.14 145);
+  --primary-foreground: oklch(0.98 0.01 110);
+  --secondary: oklch(0.91 0.012 95);
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.91 0.012 95);
+  --muted-foreground: oklch(0.45 0.02 145);
+  --accent: oklch(0.82 0.2 133);
+  --accent-foreground: oklch(0.16 0.02 145);
+  --destructive: oklch(0.58 0.22 28);
+  --border: oklch(0.78 0.015 100);
+  --input: var(--border);
+  --ring: oklch(0.6 0.18 140);
+}
+
+.dark {
+  --background: oklch(0.12 0.014 155);
+  --foreground: oklch(0.92 0.012 105);
+  --card: oklch(0.155 0.016 155);
+  --card-foreground: var(--foreground);
+  --popover: oklch(0.14 0.015 155);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.79 0.2 135);
+  --primary-foreground: oklch(0.11 0.02 155);
+  --secondary: oklch(0.2 0.018 155);
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.2 0.018 155);
+  --muted-foreground: oklch(0.66 0.018 120);
+  --accent: oklch(0.82 0.21 135);
+  --accent-foreground: oklch(0.11 0.02 155);
+  --destructive: oklch(0.67 0.2 25);
+  --border: oklch(0.31 0.025 150);
+  --input: var(--border);
+  --ring: oklch(0.79 0.2 135);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply scroll-smooth font-sans;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+
+  a,
+  button {
+    @apply focus-visible:outline-2 focus-visible:outline-offset-4;
+  }
+}
+
+@layer utilities {
+  @keyframes equalizer {
+    0%,
+    100% {
+      height: 0.25rem;
+    }
+
+    50% {
+      height: 1rem;
+    }
+  }
+
+  .equalizer-bar {
+    width: 0.125rem;
+    height: 0.25rem;
+    background: var(--primary);
+    animation: equalizer 0.8s ease-in-out infinite;
+  }
+
+  .equalizer-bar:nth-child(2) {
+    animation-delay: -0.25s;
+    animation-duration: 0.65s;
+  }
+
+  .equalizer-bar:nth-child(3) {
+    animation-delay: -0.5s;
+    animation-duration: 0.95s;
+  }
+
+  .equalizer-bar:nth-child(4) {
+    animation-delay: -0.15s;
+    animation-duration: 0.7s;
+  }
+
+  .site-shell {
+    @apply mx-auto w-full max-w-[1440px] bg-background/92;
+  }
+
+  .section-rule {
+    @apply border-t px-5 py-20;
+  }
+
+  .eyebrow {
+    @apply font-mono text-xs font-medium tracking-[0.18em] text-muted-foreground uppercase;
+  }
+
+  .terminal-card {
+    @apply border bg-card shadow-[4px_4px_0_var(--border)];
+  }
+
+  .prose-technical {
+    @apply text-base leading-8 text-muted-foreground;
+  }
+
+  .prose-technical h2 {
+    @apply mt-14 mb-4 font-mono text-xl font-medium tracking-tight text-foreground;
+  }
+
+  .prose-technical p {
+    @apply my-5;
+  }
+
+  .hero-fade-in {
+    animation: hero-fade-in 0.6s ease-out both;
+  }
+
+  .visually-hidden {
+    @apply absolute size-px overflow-hidden border-0 p-0;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .visually-hidden:focus {
+    @apply top-2 left-2 z-50 size-auto overflow-visible bg-primary px-4 py-2 font-mono text-xs text-primary-foreground;
+    clip: auto;
+    white-space: normal;
+  }
+
+  .logo-cursor::after {
+    content: "";
+    display: inline-block;
+    width: 0.5em;
+    height: 1em;
+    margin-left: 0.15em;
+    vertical-align: -0.15em;
+    background: currentColor;
+    animation: logo-cursor-blink 1s steps(1) infinite;
+  }
+}
+
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes collapsible-down {
+  from {
+    height: 0;
+  }
+
+  to {
+    height: var(--radix-collapsible-content-height);
+  }
+}
+
+@keyframes collapsible-up {
+  from {
+    height: var(--radix-collapsible-content-height);
+  }
+
+  to {
+    height: 0;
+  }
+}
+
+@keyframes logo-cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (min-width: 40rem) {
+  .section-rule {
+    padding-inline: 2rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .section-rule {
+    padding: 7rem 3.5rem;
+  }
+}
+
+body.xray [data-xray] {
+  position: relative;
+  outline: 1px solid color-mix(in oklch, var(--primary) 45%, transparent) !important;
+}
+
+body.xray [data-xray]::before {
+  content: attr(data-xray);
+  position: absolute;
+  z-index: 20;
+  top: 0;
+  left: 0;
+  max-width: 85%;
+  padding: 0.3rem 0.5rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font: 0.6rem/1.2 var(--font-mono);
+  letter-spacing: 0.04em;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  @page {
+    size: letter;
+    margin: 0.4in;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .resume-page {
+    max-width: none;
+    padding: 0;
+  }
+
+  .resume-page article {
+    font-size: 9pt;
+  }
+
+  .resume-page section {
+    break-inside: avoid;
+  }
+}

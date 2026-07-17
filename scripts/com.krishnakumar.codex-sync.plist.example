@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with `pnpm codex:install`; the real file contains local paths and a secret. -->
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.krishnakumar.codex-sync</string>
+  <key>StartInterval</key><integer>3600</integer>
+  <key>RunAtLoad</key><true/>
+</dict></plist>

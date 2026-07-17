@@ -1,0 +1,56 @@
+---
+title: "A PDF pipeline that makes AI answers cite real pages"
+summary: "Programmatic audit-report generation, page-level text indexing, and citation grounding so assistant answers point at the exact page of the source document."
+publishedAt: "2026-07-16"
+draft: false
+tags:
+  - AI
+  - Documents
+  - Full stack
+role: "Full-Stack Developer"
+stack:
+  - Node.js
+  - Express
+  - PDFKit
+  - pdf-parse
+  - PDF.js
+  - Vue 3
+  - Prisma
+outcome: "Assistant citations resolve to exact PDF page numbers, and audit reports export as fully programmatic PDFs with no browser rendering dependency."
+---
+
+A compliance platform needed three things from PDFs at once: generate polished audit reports, let an AI assistant answer questions from a document library, and keep every file behind authentication. I built the pipeline that does all three.
+
+## The citation problem
+
+The assistant answered questions from uploaded documents, but its citations pointed at a file, not a place in the file. For compliance work that is not good enough — an auditor needs to open page 47, not skim a 200-page manual hoping the quoted passage is real.
+
+The model's file API does not return page numbers. So I built the grounding myself:
+
+- On upload, the file streams to the AI provider, then a background job extracts text per page with `pdf-parse` and persists it — page number, text, character count — in an indexed table.
+- When the assistant cites a passage, a matcher resolves it against the stored pages: exact match first, then partial, then fuzzy. The citation comes back with a page number attached.
+- Extraction is parse-once: every later citation lookup is a database query, not a re-parse of the PDF.
+
+Extraction runs fire-and-forget after the upload response, so adding the index costs the user no upload latency.
+
+## Reports without a headless browser
+
+Audit exports are generated straight from PDFKit primitives — a single service composes the cover page, scope, executive summary, per-section scores, gap analysis, and references from the stored audit data. No HTML template, no headless Chromium, no screenshot-to-PDF step.
+
+That choice bought three things: deterministic layout that doesn't drift with a browser update, a dependency footprint small enough to run anywhere Node runs, and full control over details like rich-text bullet normalization inside report sections. The report builds in memory and returns as a buffer; the controller can hand it to the user and attach it to the audit record in one pass.
+
+## Serving documents without leaking them
+
+Files never get public URLs. The Vue client fetches every document as an authenticated blob and feeds it to a custom PDF.js viewer — toolbar, zoom from 0.1× to 5×, fit-width and fit-height, rotation, text selection. Download and print controls are role-gated per document, and the server's serve endpoint enforces access on every request, with immutable cache headers so repeat views are free.
+
+## Sizing the system honestly
+
+I kept the processing model deliberately simple and put the safety in the limits: uploads cap at 25 MB per file, plan tiers cap total storage, and the page-text index carries character counts per page so storage stays observable. Within those bounds, whole-buffer parsing on the main thread is fine — and the system avoids the operational cost of a worker queue it didn't yet need. The next scaling step is known and boring: move extraction onto a queue when the file caps rise.
+
+## What I learned
+
+Grounding AI output is retrieval engineering, not prompt engineering. The assistant became trustworthy the day its citations could be checked against a page, and that came from a database schema and a matching cascade — not from the model. And on PDFs specifically: generating them programmatically is more work up front than printing HTML, but every hour spent there came back in layout control and deployment simplicity.
+
+## Confidentiality note
+
+This write-up describes engineering approaches only. Client names, document contents, internal prompts, and proprietary audit methodology are intentionally omitted.

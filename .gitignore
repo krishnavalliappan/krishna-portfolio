@@ -1,0 +1,30 @@
+node_modules
+.content-collections
+.env
+.env.local
+local.db
+local.db-*
+playwright-report
+test-results
+.DS_Store
+dist
+dist-ssr
+*.local
+.env*
+!.env.example
+.tanstack
+.wrangler
+.output
+.vercel
+.vinxi
+__unconfig*
+todos.json
+
+# typescript
+*.tsbuildinfo
+scripts/codex-sync.config.json
+.playwright-mcp/
+
+# local notes and agent artifacts
+docs/
+.pi-subagents/

@@ -1,0 +1,8 @@
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+.content-collections/
+.output/
+.vercel/
+.tanstack/
+node_modules/
