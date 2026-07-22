@@ -15,8 +15,8 @@ const accountStateSchema = z.object({
 })
 
 const enabledAccountSchema = z.object({
-  accountId: z.string().min(1),
-  accessToken: z.string().min(1),
+  accountId: z.string().trim().min(1),
+  accessToken: z.string().trim().min(1),
   expiresAt: z.number(),
 })
 

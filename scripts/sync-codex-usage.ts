@@ -25,9 +25,9 @@ try {
   const config = configSchema.parse(
     JSON.parse(await readFile(configPath, "utf8"))
   )
-  const accounts = await ensureFreshOpenCodeAccounts(
-    config.accountStore,
-    refreshOpenCodeCredentials
+  const accountStorePath = config.accountStore.replace(/^\$HOME|^~/, homedir())
+  const accounts = await ensureFreshOpenCodeAccounts(accountStorePath, () =>
+    refreshOpenCodeCredentials(accountStorePath)
   )
   const profiles = await Promise.all(
     accounts.map((account, index) => fetchProfile(account, index))
@@ -104,11 +104,18 @@ async function fetchProfile(account: OpenCodeAccount, index: number) {
     throw new Error(
       `OpenCode account ${index} profile request returned HTTP ${response.status}`
     )
-  return tokenUsageProfileSchema.parse(await response.json())
+  const profile = tokenUsageProfileSchema.safeParse(await response.json())
+  if (!profile.success)
+    throw new Error(`OpenCode account ${index} profile payload is malformed`)
+  return profile.data
 }
 
-async function refreshOpenCodeCredentials() {
-  await promisify(execFile)("oc-codex-multi-auth", ["warm", "--json"])
+async function refreshOpenCodeCredentials(accountStorePath: string) {
+  await promisify(execFile)(
+    "oc-codex-multi-auth",
+    ["warm", "--json", "--config-path", accountStorePath],
+    { timeout: 30_000, killSignal: "SIGTERM" }
+  )
 }
 
 async function readState(): Promise<{ failures: number; notified: boolean }> {

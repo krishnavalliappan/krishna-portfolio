@@ -59,6 +59,18 @@ describe("ensureFreshOpenCodeAccounts", () => {
     ).rejects.toThrow("OpenCode account 0 is malformed")
   })
 
+  it("rejects whitespace-only credentials", async () => {
+    const blankAccountId = await store([account({ accountId: " " })])
+    const blankAccessToken = await store([account({ accessToken: " " })])
+
+    await expect(
+      ensureFreshOpenCodeAccounts(blankAccountId, vi.fn(), now)
+    ).rejects.toThrow("OpenCode account 0 is malformed")
+    await expect(
+      ensureFreshOpenCodeAccounts(blankAccessToken, vi.fn(), now)
+    ).rejects.toThrow("OpenCode account 0 is malformed")
+  })
+
   it("rejects a store without enabled accounts", async () => {
     const path = await store([account({ enabled: false })])
 
