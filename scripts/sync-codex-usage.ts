@@ -6,15 +6,14 @@ import { promisify } from "node:util"
 import { z } from "zod"
 
 import { aggregateProfiles } from "../src/features/codex-activity/aggregate"
-import {
-  codexAuthSchema,
-  tokenUsageProfileSchema,
-} from "../src/features/codex-activity/openai-profile.schema"
+import { ensureFreshOpenCodeAccounts } from "../src/features/codex-activity/opencode-accounts"
+import type { OpenCodeAccount } from "../src/features/codex-activity/opencode-accounts"
+import { tokenUsageProfileSchema } from "../src/features/codex-activity/openai-profile.schema"
 import { signActivity } from "../src/features/codex-activity/signature"
 
 const configSchema = z.object({
   endpoint: z.url(),
-  profiles: z.array(z.string().min(1)).min(1),
+  accountStore: z.string().min(1),
 })
 
 const dryRun = process.argv.includes("--dry-run")
@@ -26,7 +25,13 @@ try {
   const config = configSchema.parse(
     JSON.parse(await readFile(configPath, "utf8"))
   )
-  const profiles = await Promise.all(config.profiles.map(fetchProfile))
+  const accounts = await ensureFreshOpenCodeAccounts(
+    config.accountStore,
+    refreshOpenCodeCredentials
+  )
+  const profiles = await Promise.all(
+    accounts.map((account, index) => fetchProfile(account, index))
+  )
   const snapshot = aggregateProfiles(profiles)
 
   if (dryRun) {
@@ -81,17 +86,12 @@ try {
   process.exitCode = 1
 }
 
-async function fetchProfile(path: string) {
-  const resolvedPath = path.replace(/^\$HOME|^~/, homedir())
-  const auth = codexAuthSchema.parse(
-    JSON.parse(await readFile(resolvedPath, "utf8"))
-  )
+async function fetchProfile(account: OpenCodeAccount, index: number) {
   const headers: Record<string, string> = {
-    authorization: `Bearer ${auth.tokens.access_token}`,
+    authorization: `Bearer ${account.accessToken}`,
+    "chatgpt-account-id": account.accountId,
     "user-agent": "krishna-portfolio-codex-sync/1.0",
   }
-  if (auth.tokens.account_id)
-    headers["chatgpt-account-id"] = auth.tokens.account_id
 
   const response = await fetch(
     "https://chatgpt.com/backend-api/wham/profiles/me",
@@ -101,8 +101,14 @@ async function fetchProfile(path: string) {
     }
   )
   if (!response.ok)
-    throw new Error(`Profile request returned HTTP ${response.status}`)
+    throw new Error(
+      `OpenCode account ${index} profile request returned HTTP ${response.status}`
+    )
   return tokenUsageProfileSchema.parse(await response.json())
+}
+
+async function refreshOpenCodeCredentials() {
+  await promisify(execFile)("oc-codex-multi-auth", ["warm", "--json"])
 }
 
 async function readState(): Promise<{ failures: number; notified: boolean }> {
