@@ -28,3 +28,4 @@ scripts/codex-sync.config.json
 # local notes and agent artifacts
 docs/
 .pi-subagents/
+.worktrees/
