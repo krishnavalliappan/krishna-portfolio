@@ -6,14 +6,11 @@ import { promisify } from "node:util"
 import { z } from "zod"
 
 import { aggregateProfiles } from "../src/features/codex-activity/aggregate"
-import { ensureFreshOpenCodeAccounts } from "../src/features/codex-activity/opencode-accounts"
-import type { OpenCodeAccount } from "../src/features/codex-activity/opencode-accounts"
-import { tokenUsageProfileSchema } from "../src/features/codex-activity/openai-profile.schema"
+import { fetchActiveOpenCodeProfile } from "../src/features/codex-activity/opencode-profile"
 import { signActivity } from "../src/features/codex-activity/signature"
 
 const configSchema = z.object({
   endpoint: z.url(),
-  accountStore: z.string().min(1),
 })
 
 const dryRun = process.argv.includes("--dry-run")
@@ -25,13 +22,7 @@ try {
   const config = configSchema.parse(
     JSON.parse(await readFile(configPath, "utf8"))
   )
-  const accountStorePath = config.accountStore.replace(/^\$HOME|^~/, homedir())
-  const accounts = await ensureFreshOpenCodeAccounts(accountStorePath, () =>
-    refreshOpenCodeCredentials(accountStorePath)
-  )
-  const profiles = await Promise.all(
-    accounts.map((account, index) => fetchProfile(account, index))
-  )
+  const profiles = [await fetchActiveOpenCodeProfile()]
   const snapshot = aggregateProfiles(profiles)
 
   if (dryRun) {
@@ -84,38 +75,6 @@ try {
     `Codex sync failed: ${error instanceof Error ? error.message : "Unknown error"}`
   )
   process.exitCode = 1
-}
-
-async function fetchProfile(account: OpenCodeAccount, index: number) {
-  const headers: Record<string, string> = {
-    authorization: `Bearer ${account.accessToken}`,
-    "chatgpt-account-id": account.accountId,
-    "user-agent": "krishna-portfolio-codex-sync/1.0",
-  }
-
-  const response = await fetch(
-    "https://chatgpt.com/backend-api/wham/profiles/me",
-    {
-      headers,
-      signal: AbortSignal.timeout(10_000),
-    }
-  )
-  if (!response.ok)
-    throw new Error(
-      `OpenCode account ${index} profile request returned HTTP ${response.status}`
-    )
-  const profile = tokenUsageProfileSchema.safeParse(await response.json())
-  if (!profile.success)
-    throw new Error(`OpenCode account ${index} profile payload is malformed`)
-  return profile.data
-}
-
-async function refreshOpenCodeCredentials(accountStorePath: string) {
-  await promisify(execFile)(
-    "oc-codex-multi-auth",
-    ["warm", "--json", "--config-path", accountStorePath],
-    { timeout: 30_000, killSignal: "SIGTERM" }
-  )
 }
 
 async function readState(): Promise<{ failures: number; notified: boolean }> {

@@ -1,4 +1,3 @@
 {
-  "endpoint": "https://www.krishnakumar.dev/api/internal/codex-sync",
-  "accountStore": "$HOME/.opencode/oc-codex-multi-auth-accounts.json"
+  "endpoint": "https://www.krishnakumar.dev/api/internal/codex-sync"
 }
