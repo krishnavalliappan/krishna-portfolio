@@ -6,7 +6,8 @@ import { ContentPage } from "@/components/site/content-page"
 export const Route = createFileRoute("/writing/$slug")({
   loader: ({ params }) => {
     const article = allWritings.find(
-      (entry) => entry.slug === params.slug && !entry.draft
+      (entry) =>
+        entry.slug === params.slug && (import.meta.env.DEV || !entry.draft)
     )
     if (!article) throw notFound()
     return article
@@ -27,6 +28,7 @@ function WritingPage() {
       title={article.title}
       summary={article.summary}
       date={article.publishedAt}
+      updatedAt={article.updatedAt}
       tags={article.tags}
       body={article.body}
       kind="Writing"
