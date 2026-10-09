@@ -18,9 +18,10 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # build first: it generates the content-collections types that typecheck and tests import
+      - run: pnpm build
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm lint
-      - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
