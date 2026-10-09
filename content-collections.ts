@@ -6,6 +6,7 @@ const baseSchema = z.object({
   title: z.string().min(1),
   summary: z.string().min(1),
   publishedAt: z.string().date(),
+  updatedAt: z.string().date().optional(),
   draft: z.boolean().default(false),
   tags: z.array(z.string().min(1)).min(1),
   content: z.string().min(1),

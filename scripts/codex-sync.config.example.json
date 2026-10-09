@@ -1,7 +1,3 @@
 {
-  "endpoint": "https://www.krishnakumar.dev/api/internal/codex-sync",
-  "profiles": [
-    "$HOME/.codex/accounts/personal.auth.json",
-    "$HOME/.codex/accounts/work.auth.json"
-  ]
+  "endpoint": "https://www.krishnakumar.dev/api/internal/codex-sync"
 }

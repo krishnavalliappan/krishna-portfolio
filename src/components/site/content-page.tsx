@@ -7,6 +7,7 @@ export function ContentPage({
   title,
   summary,
   date,
+  updatedAt,
   tags,
   body,
   kind,
@@ -14,6 +15,7 @@ export function ContentPage({
   title: string
   summary: string
   date: string
+  updatedAt?: string
   tags: readonly string[]
   body: string
   kind: string
@@ -32,7 +34,12 @@ export function ContentPage({
           <header className="border-b pb-12">
             <div className="eyebrow mb-6 flex flex-wrap gap-x-5 gap-y-2">
               <span className="text-primary">{kind}</span>
-              <time>{date}</time>
+              <time dateTime={date}>{date}</time>
+              {updatedAt ? (
+                <span>
+                  Updated <time dateTime={updatedAt}>{updatedAt}</time>
+                </span>
+              ) : null}
               <span>{tags.join(" / ")}</span>
             </div>
             <h1 className="text-4xl leading-[1.05] font-semibold tracking-[-0.05em] sm:text-6xl">

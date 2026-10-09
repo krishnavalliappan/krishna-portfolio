@@ -6,15 +6,11 @@ import { promisify } from "node:util"
 import { z } from "zod"
 
 import { aggregateProfiles } from "../src/features/codex-activity/aggregate"
-import {
-  codexAuthSchema,
-  tokenUsageProfileSchema,
-} from "../src/features/codex-activity/openai-profile.schema"
+import { fetchActiveOpenCodeProfile } from "../src/features/codex-activity/opencode-profile"
 import { signActivity } from "../src/features/codex-activity/signature"
 
 const configSchema = z.object({
   endpoint: z.url(),
-  profiles: z.array(z.string().min(1)).min(1),
 })
 
 const dryRun = process.argv.includes("--dry-run")
@@ -26,7 +22,7 @@ try {
   const config = configSchema.parse(
     JSON.parse(await readFile(configPath, "utf8"))
   )
-  const profiles = await Promise.all(config.profiles.map(fetchProfile))
+  const profiles = [await fetchActiveOpenCodeProfile()]
   const snapshot = aggregateProfiles(profiles)
 
   if (dryRun) {
@@ -79,30 +75,6 @@ try {
     `Codex sync failed: ${error instanceof Error ? error.message : "Unknown error"}`
   )
   process.exitCode = 1
-}
-
-async function fetchProfile(path: string) {
-  const resolvedPath = path.replace(/^\$HOME|^~/, homedir())
-  const auth = codexAuthSchema.parse(
-    JSON.parse(await readFile(resolvedPath, "utf8"))
-  )
-  const headers: Record<string, string> = {
-    authorization: `Bearer ${auth.tokens.access_token}`,
-    "user-agent": "krishna-portfolio-codex-sync/1.0",
-  }
-  if (auth.tokens.account_id)
-    headers["chatgpt-account-id"] = auth.tokens.account_id
-
-  const response = await fetch(
-    "https://chatgpt.com/backend-api/wham/profiles/me",
-    {
-      headers,
-      signal: AbortSignal.timeout(10_000),
-    }
-  )
-  if (!response.ok)
-    throw new Error(`Profile request returned HTTP ${response.status}`)
-  return tokenUsageProfileSchema.parse(await response.json())
 }
 
 async function readState(): Promise<{ failures: number; notified: boolean }> {

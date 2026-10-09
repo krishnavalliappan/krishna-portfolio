@@ -9,31 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ResumeDottxtRouteImport } from './routes/resume[.]txt'
-import { Route as ResumeDotjsonRouteImport } from './routes/resume[.]json'
-import { Route as ResumeRouteImport } from './routes/resume'
-import { Route as PlaygroundRouteImport } from './routes/playground'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as WritingSlugRouteImport } from './routes/writing.$slug'
-import { Route as CaseStudiesSlugRouteImport } from './routes/case-studies.$slug'
-import { Route as ApiSpotifyRouteImport } from './routes/api.spotify'
-import { Route as ApiGithubActivityRouteImport } from './routes/api.github-activity'
+import { Route as PlaygroundRouteImport } from './routes/playground'
+import { Route as ResumeRouteImport } from './routes/resume'
+import { Route as ResumeDotjsonRouteImport } from './routes/resume[.]json'
+import { Route as ResumeDottxtRouteImport } from './routes/resume[.]txt'
 import { Route as ApiCodexActivityRouteImport } from './routes/api.codex-activity'
+import { Route as ApiGithubActivityRouteImport } from './routes/api.github-activity'
+import { Route as ApiSpotifyRouteImport } from './routes/api.spotify'
+import { Route as CaseStudiesSlugRouteImport } from './routes/case-studies.$slug'
+import { Route as WritingSlugRouteImport } from './routes/writing.$slug'
 import { Route as ApiInternalCodexSyncRouteImport } from './routes/api.internal.codex-sync'
 
-const ResumeDottxtRoute = ResumeDottxtRouteImport.update({
-  id: '/resume.txt',
-  path: '/resume.txt',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResumeDotjsonRoute = ResumeDotjsonRouteImport.update({
-  id: '/resume.json',
-  path: '/resume.json',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResumeRoute = ResumeRouteImport.update({
-  id: '/resume',
-  path: '/resume',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlaygroundRoute = PlaygroundRouteImport.update({
@@ -41,24 +31,24 @@ const PlaygroundRoute = PlaygroundRouteImport.update({
   path: '/playground',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ResumeRoute = ResumeRouteImport.update({
+  id: '/resume',
+  path: '/resume',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WritingSlugRoute = WritingSlugRouteImport.update({
-  id: '/writing/$slug',
-  path: '/writing/$slug',
+const ResumeDotjsonRoute = ResumeDotjsonRouteImport.update({
+  id: '/resume.json',
+  path: '/resume.json',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CaseStudiesSlugRoute = CaseStudiesSlugRouteImport.update({
-  id: '/case-studies/$slug',
-  path: '/case-studies/$slug',
+const ResumeDottxtRoute = ResumeDottxtRouteImport.update({
+  id: '/resume.txt',
+  path: '/resume.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiSpotifyRoute = ApiSpotifyRouteImport.update({
-  id: '/api/spotify',
-  path: '/api/spotify',
+const ApiCodexActivityRoute = ApiCodexActivityRouteImport.update({
+  id: '/api/codex-activity',
+  path: '/api/codex-activity',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiGithubActivityRoute = ApiGithubActivityRouteImport.update({
@@ -66,9 +56,19 @@ const ApiGithubActivityRoute = ApiGithubActivityRouteImport.update({
   path: '/api/github-activity',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiCodexActivityRoute = ApiCodexActivityRouteImport.update({
-  id: '/api/codex-activity',
-  path: '/api/codex-activity',
+const ApiSpotifyRoute = ApiSpotifyRouteImport.update({
+  id: '/api/spotify',
+  path: '/api/spotify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CaseStudiesSlugRoute = CaseStudiesSlugRouteImport.update({
+  id: '/case-studies/$slug',
+  path: '/case-studies/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WritingSlugRoute = WritingSlugRouteImport.update({
+  id: '/writing/$slug',
+  path: '/writing/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiInternalCodexSyncRoute = ApiInternalCodexSyncRouteImport.update({
@@ -175,25 +175,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/resume.txt': {
-      id: '/resume.txt'
-      path: '/resume.txt'
-      fullPath: '/resume.txt'
-      preLoaderRoute: typeof ResumeDottxtRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resume.json': {
-      id: '/resume.json'
-      path: '/resume.json'
-      fullPath: '/resume.json'
-      preLoaderRoute: typeof ResumeDotjsonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resume': {
-      id: '/resume'
-      path: '/resume'
-      fullPath: '/resume'
-      preLoaderRoute: typeof ResumeRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/playground': {
@@ -203,32 +189,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlaygroundRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/resume': {
+      id: '/resume'
+      path: '/resume'
+      fullPath: '/resume'
+      preLoaderRoute: typeof ResumeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/writing/$slug': {
-      id: '/writing/$slug'
-      path: '/writing/$slug'
-      fullPath: '/writing/$slug'
-      preLoaderRoute: typeof WritingSlugRouteImport
+    '/resume.json': {
+      id: '/resume.json'
+      path: '/resume.json'
+      fullPath: '/resume.json'
+      preLoaderRoute: typeof ResumeDotjsonRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/case-studies/$slug': {
-      id: '/case-studies/$slug'
-      path: '/case-studies/$slug'
-      fullPath: '/case-studies/$slug'
-      preLoaderRoute: typeof CaseStudiesSlugRouteImport
+    '/resume.txt': {
+      id: '/resume.txt'
+      path: '/resume.txt'
+      fullPath: '/resume.txt'
+      preLoaderRoute: typeof ResumeDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/spotify': {
-      id: '/api/spotify'
-      path: '/api/spotify'
-      fullPath: '/api/spotify'
-      preLoaderRoute: typeof ApiSpotifyRouteImport
+    '/api/codex-activity': {
+      id: '/api/codex-activity'
+      path: '/api/codex-activity'
+      fullPath: '/api/codex-activity'
+      preLoaderRoute: typeof ApiCodexActivityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/github-activity': {
@@ -238,11 +224,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiGithubActivityRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/codex-activity': {
-      id: '/api/codex-activity'
-      path: '/api/codex-activity'
-      fullPath: '/api/codex-activity'
-      preLoaderRoute: typeof ApiCodexActivityRouteImport
+    '/api/spotify': {
+      id: '/api/spotify'
+      path: '/api/spotify'
+      fullPath: '/api/spotify'
+      preLoaderRoute: typeof ApiSpotifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/case-studies/$slug': {
+      id: '/case-studies/$slug'
+      path: '/case-studies/$slug'
+      fullPath: '/case-studies/$slug'
+      preLoaderRoute: typeof CaseStudiesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/writing/$slug': {
+      id: '/writing/$slug'
+      path: '/writing/$slug'
+      fullPath: '/writing/$slug'
+      preLoaderRoute: typeof WritingSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/internal/codex-sync': {

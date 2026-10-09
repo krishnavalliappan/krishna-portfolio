@@ -41,7 +41,7 @@ type SkillIcon = ComponentType<{
   "aria-hidden"?: boolean | "true" | "false"
 }>
 
-export const skillIcons: Record<string, SkillIcon> = {
+export const skillIcons: Partial<Record<string, SkillIcon>> = {
   Python: SiPython,
   TypeScript: SiTypescript,
   JavaScript: SiJavascript,

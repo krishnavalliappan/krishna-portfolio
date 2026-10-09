@@ -25,7 +25,8 @@ pnpm test:e2e
 ## Content and resume
 
 - Profile, experience, projects, and skills: `src/content/site.ts`
-- Writing and case studies: `content/`
+- Writing release snapshots: generated from the sibling `personal-blogs` repository
+- Case studies: `content/case-studies/`
 - HTML resume: `/resume`
 - Machine-readable resume: `/resume.txt` and `/resume.json`
 - PDF: run `pnpm resume:pdf` while the local server is running

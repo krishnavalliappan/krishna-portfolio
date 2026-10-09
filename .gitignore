@@ -28,3 +28,6 @@ scripts/codex-sync.config.json
 # local notes and agent artifacts
 docs/
 .pi-subagents/
+.worktrees/
+# Added by code-review-graph
+.code-review-graph/
