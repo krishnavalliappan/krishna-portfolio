@@ -4,6 +4,7 @@ import { Menu } from "lucide-react"
 import { useEffect, useState } from "react"
 
 import { ThemeToggle } from "@/components/site/theme-toggle"
+import { XrayToggle } from "@/components/site/xray-toggle"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -99,6 +100,7 @@ export function SiteHeader() {
           })}
         </nav>
         <div className="ml-auto flex items-center lg:ml-0">
+          <XrayToggle />
           <ThemeToggle />
           <Sheet>
             <SheetTrigger asChild>
