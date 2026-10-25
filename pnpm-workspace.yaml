@@ -5,3 +5,11 @@ allowBuilds:
   lightningcss: true
   unrs-resolver: true
   msw: false
+
+# Minimum safe versions for packages that arrive through others (security advisories). Drop a line once its parent
+# ships the fix.
+overrides:
+  # via @content-collections/mdx > mdx-bundler > remark-mdx-frontmatter (toml ^3): prototype pollution and DoS
+  toml@<5.0.1: ^5.0.1
+  # via mdx-bundler (uuid ^9): buffer bounds check in v3/v5/v6
+  uuid@<11.1.1: ^11.1.1
